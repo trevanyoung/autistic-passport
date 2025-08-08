@@ -1,6 +1,15 @@
 .App {
   text-align: center;
+  background-color: black;
+  min-height: 100vh; /* full screen height */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
 }
+
 
 .App-logo {
   height: 40vmin;
@@ -35,4 +44,14 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.download-btn {
+  background-color: blue;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: not-allowed; /* because it's "coming soon" */
 }

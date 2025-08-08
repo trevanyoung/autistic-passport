@@ -7,16 +7,9 @@ import { siteBucket, bucketRegionalDomainName } from "./s3";
 const domainName = "autisticpassport.com";
 const altNames = ["www.autisticpassport.com"]; // SANs
 
-/** ACM cert in us-east-1 (required for CloudFront) */
-const use1 = new aws.Provider("use1", { region: "us-east-1" });
-const cert = new aws.acm.Certificate("cfCert", {
-  domainName,
-  validationMethod: "DNS",
-  subjectAlternativeNames: altNames,
-}, { provider: use1 });
-
-/** Export DNS validation CNAMEs so you can add them in Namecheap */
-export const certificateValidationRecords = cert.domainValidationOptions;
+/** 🔒 Use existing ACM cert (us-east-1). Pulumi will NOT create/modify certs. */
+const ACM_CERT_ARN =
+  "arn:aws:acm:us-east-1:695862630466:certificate/cb442fff-7487-4ea0-91cb-33da2481a312";
 
 /** Origin Access Control so CF can read from *private* S3 */
 export const oac = new aws.cloudfront.OriginAccessControl("oac", {
@@ -35,12 +28,14 @@ export const distribution = new aws.cloudfront.Distribution("cdn", {
   // Use your custom domains
   aliases: [domainName, ...altNames],
 
-  origins: [{
-    originId: siteBucket.arn,
-    domainName: bucketRegionalDomainName, // e.g., bucket.s3.us-east-1.amazonaws.com
-    originAccessControlId: oac.id,
-    s3OriginConfig: { originAccessIdentity: "" }, // empty when using OAC
-  }],
+  origins: [
+    {
+      originId: siteBucket.arn,
+      domainName: bucketRegionalDomainName, // e.g., bucket.s3.us-east-1.amazonaws.com
+      originAccessControlId: oac.id,
+      s3OriginConfig: { originAccessIdentity: "" }, // empty when using OAC
+    },
+  ],
 
   defaultCacheBehavior: {
     targetOriginId: siteBucket.arn,
@@ -60,12 +55,15 @@ export const distribution = new aws.cloudfront.Distribution("cdn", {
   restrictions: { geoRestriction: { restrictionType: "none" } },
   priceClass: "PriceClass_100",
 
-  // Attach your ACM cert
+  // 🔒 Attach your existing ACM cert (no DNS changes)
   viewerCertificate: {
-    acmCertificateArn: cert.arn,
+    acmCertificateArn: ACM_CERT_ARN,
     sslSupportMethod: "sni-only",
     minimumProtocolVersion: "TLSv1.2_2021",
   },
+
+  // Optional: keep this so CF waits for full deploy before Pulumi finishes
+  waitForDeployment: true,
 });
 
 /** Allow *this* CloudFront distribution to read objects via OAC */
@@ -88,5 +86,5 @@ new aws.s3.BucketPolicy("oacReadPolicy", {
   ),
 });
 
-export const cloudFrontDomain = distribution.domainName; // e.g. d123.cloudfront.net
+export const cloudFrontDomain = distribution.domainName; // e.g., d123.cloudfront.net
 export const cloudFrontId = distribution.id;
