@@ -55,3 +55,9 @@
   font-size: 1rem;
   cursor: not-allowed; /* because it's "coming soon" */
 }
+
+.book-cover {
+  max-width: 200px;  /* was probably 800+, so much smaller */
+  height: auto;
+  margin: 20px 0;
+}
