@@ -28,8 +28,8 @@ function App() {
           <li>Decoding neurotypical social cues</li>
           <li>Thriving in male peer groups</li>
           <li>Recognizing manipulation & bullying</li>
-          <li>Building meaningful friendships and relationships</li>
           <li>Flirting and dating advice tailored for autistic men</li>
+          <li>Building meaningful friendships and relationships</li>
         </ul>
       </div>
 

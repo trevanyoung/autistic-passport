@@ -61,3 +61,31 @@
   height: auto;
   margin: 20px 0;
 }
+
+.hook {
+  max-width: 600px;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 10px 0 20px;
+  color: #ccc;
+}
+
+.toc {
+  text-align: left;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+.toc h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.toc ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.toc li {
+  margin-bottom: 6px;
+}
