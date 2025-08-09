@@ -15,10 +15,14 @@
 ## 🚀 Features
 
 - Fully responsive (works on desktop, tablet, and mobile)
-- Installable as a PWA
 - Fast loading via static asset CDN (CloudFront)
 - Deployable via CI/CD or manual upload to S3
 
 ---
+
+## Deployment Method 
+npm run build
+aws s3 sync build/ s3://autistic-passport-site --delete
+aws cloudfront create-invalidation --distribution-id E383W7YGYSQ0X --paths "/*"
 
 
